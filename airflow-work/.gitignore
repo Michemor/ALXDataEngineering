@@ -1,0 +1,43 @@
+# ==========================================
+# 1. Environment Variables & Security (CRUCIAL)
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# 2. Python & Virtual Environments
+# ==========================================
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# ==========================================
+# 3. Airflow Runtime & Database Files
+# ==========================================
+# If Airflow initializes or runs locally inside this directory,
+# ignore its databases, logs, and process tracking files.
+airflow.db
+airflow.cfg
+webserver_config.py
+*.log
+airflow/logs/
+airflow/local_settings.py
+airflow-webserver.pid
+
+# ==========================================
+# 4. Downloaded Images & Local Scraping Data
+# ==========================================
+# Prevents uploading heavy kitten images and raw API JSON outputs to Git
+tmp/
+**/tmp/
+*.json
+
+*.log
+logs/
+**/logs/
+airflow/logs/

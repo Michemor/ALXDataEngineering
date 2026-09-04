@@ -1,0 +1,290 @@
+
+5666666666666666666666666666666666666666666666666666666666666666666666666666666665555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555655666666666666666666666666666666666666666666666666666666666666666666666688888555588888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Budget Account Setup</title>
+    <style>
+        :root {
+            --bg: #f4efe6;
+            --panel: #fffaf2;
+            --ink: #1f2a2e;
+            --muted: #59666c;
+            --accent: #167c80;
+            --ok: #1f8b4c;
+            --warn: #b3473c;
+            --border: #d9cfbe;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 10% 10%, #fbe8ca 0, rgba(251, 232, 202, 0) 32%),
+                radial-gradient(circle at 90% 20%, #d8efe4 0, rgba(216, 239, 228, 0) 28%),
+                linear-gradient(140deg, #f5f0e8 0%, #efe4d4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 920px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 14px 30px rgba(57, 48, 31, 0.12);
+            overflow: hidden;
+            animation: lift 450ms ease-out;
+        }
+
+        @keyframes lift {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, #f8f1e6 0%, #fdf8ee 100%);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.55rem;
+            letter-spacing: 0.3px;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .content {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: 1fr;
+            padding: 22px;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .panel h2 {
+            margin: 0 0 12px;
+            font-size: 1.1rem;
+        }
+
+        .helper {
+            margin: 0 0 14px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        input,
+        button {
+            font: inherit;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            background: #fffdf9;
+        }
+
+        button {
+            background: var(--accent);
+            border-color: #0f6467;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 120ms ease, box-shadow 120ms ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(22, 124, 128, 0.25);
+        }
+
+        .status {
+            margin: 0;
+            min-height: 1.1rem;
+            font-size: 0.9rem;
+        }
+
+        .status.ok {
+            color: var(--ok);
+        }
+
+        .status.error {
+            color: var(--warn);
+        }
+
+        .quick {
+            display: grid;
+            gap: 8px;
+            border-top: 1px dashed var(--border);
+            padding-top: 12px;
+        }
+
+        .quick strong {
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .chip {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            width: fit-content;
+            padding: 4px 10px;
+            font-size: 0.86rem;
+            margin: 0;
+            background: #fbf4e9;
+        }
+
+        @media (max-width: 780px) {
+            .content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class='app'>
+        <header class='header'>
+            <h1>Budget Account Setup</h1>
+            <p>Create or select your user account before tracking expenses.</p>
+        </header>
+
+        <section class='content'>
+            <section class='panel'>
+                <h2>Step 1: Select Account</h2>
+                <p class='helper'>Use your email to create an account once, then continue to your budget dashboard.</p>
+
+                <form id='accountForm'>
+                    <div class='field'>
+                        <label for='name'>Name</label>
+                        <input id='name' name='name' type='text' required maxlength='120' placeholder='Your full name'>
+                    </div>
+                    <div class='field'>
+                        <label for='email'>Email</label>
+                        <input id='email' name='email' type='email' required maxlength='120' placeholder='you@example.com'>
+                    </div>
+                    <button id='createAccountBtn' type='submit'>Continue to Budget</button>
+                    <p id='accountStatus' class='status' aria-live='polite'></p>
+                </form>
+
+                <div class='quick'>
+                    <strong>Current Browser Session</strong>
+                    <p id='sessionAccount' class='chip'>No account selected yet.</p>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        const form = document.getElementById('accountForm');
+        const statusEl = document.getElementById('accountStatus');
+        const sessionEl = document.getElementById('sessionAccount');
+
+        function setStatus(message, variant) {
+            statusEl.textContent = message;
+            statusEl.className = variant ? `status ${variant}` : 'status';
+        }
+
+        function renderSession() {
+            const accountId = localStorage.getItem('activeAccountId');
+            const accountEmail = localStorage.getItem('activeAccountEmail');
+
+            if (accountId && accountEmail) {
+                sessionEl.textContent = `${accountEmail} (ID ${accountId})`;
+            } else {
+                sessionEl.textContent = 'No account selected yet.';
+            }
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const name = String(nameInput.value || '').trim();
+            const email = String(emailInput.value || '').trim().toLowerCase();
+
+            if (!name) {
+                setStatus('Name is required.', 'error');
+                return;
+            }
+            if (!email) {
+                setStatus('Email is required.', 'error');
+                return;
+            }
+
+            setStatus('Creating or loading account...', '');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || 'Failed to create account.');
+                }
+
+                const data = await response.json();
+                localStorage.setItem('activeAccountId', String(data.id));
+                localStorage.setItem('activeAccountEmail', data.email);
+                localStorage.setItem('activeAccountName', data.name || name);
+
+                setStatus('Account ready. Redirecting to budget...', 'ok');
+                renderSession();
+                window.location.href = '/budget.html';
+            } catch (error) {
+                setStatus(error.message || 'Could not connect to API.', 'error');
+            }
+        });
+
+        renderSession();
+    </script>
+</body>
+</html>
