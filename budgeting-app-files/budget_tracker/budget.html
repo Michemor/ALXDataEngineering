@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<title>Budget Dashboard</title>
+	<style>
+		:root {
+			--bg: #f4efe6;
+			--panel: #fffaf2;
+			--ink: #1f2a2e;
+			--muted: #59666c;
+			--accent: #167c80;
+			--income: #1f8b4c;
+			--expense: #b3473c;
+			--border: #d9cfbe;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at 10% 10%, #fbe8ca 0, rgba(251, 232, 202, 0) 32%),
+				radial-gradient(circle at 90% 20%, #d8efe4 0, rgba(216, 239, 228, 0) 28%),
+				linear-gradient(140deg, #f5f0e8 0%, #efe4d4 100%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+		}
+
+		.app {
+			width: 100%;
+			max-width: 980px;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 16px;
+			box-shadow: 0 14px 30px rgba(57, 48, 31, 0.12);
+			overflow: hidden;
+			animation: lift 450ms ease-out;
+		}
+
+		@keyframes lift {
+			from {
+				transform: translateY(10px);
+				opacity: 0;
+			}
+			to {
+				transform: translateY(0);
+				opacity: 1;
+			}
+		}
+
+		.header {
+			padding: 18px 22px;
+			border-bottom: 1px solid var(--border);
+			background: linear-gradient(135deg, #f8f1e6 0%, #fdf8ee 100%);
+			display: grid;
+			gap: 10px;
+		}
+
+		.header-top {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		.header h1 {
+			margin: 0;
+			font-size: 1.45rem;
+		}
+
+		.meta {
+			margin: 0;
+			color: var(--muted);
+			font-size: 0.92rem;
+		}
+
+		.account-chip {
+			border: 1px solid var(--border);
+			border-radius: 999px;
+			padding: 6px 10px;
+			font-size: 0.84rem;
+			background: #fbf4e9;
+		}
+
+		.ghost {
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 8px 12px;
+			background: #fffdf9;
+			font: inherit;
+			cursor: pointer;
+		}
+
+		.content {
+			display: grid;
+			gap: 16px;
+			grid-template-columns: 1fr;
+			padding: 18px;
+		}
+
+		.cards {
+			display: grid;
+			gap: 12px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.card {
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 12px;
+			background: #fff;
+		}
+
+		.card small {
+			color: var(--muted);
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			font-size: 0.74rem;
+		}
+
+		.card h2 {
+			margin: 8px 0 0;
+			font-size: 1.3rem;
+		}
+
+		.positive {
+			color: var(--income);
+		}
+
+		.negative {
+			color: var(--expense);
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: 1.1fr 1.5fr;
+			gap: 16px;
+		}
+
+		.panel {
+			background: #fff;
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 14px;
+		}
+
+		.panel h3 {
+			margin: 0 0 12px;
+			font-size: 1rem;
+		}
+
+		form {
+			display: grid;
+			gap: 10px;
+		}
+
+		.field {
+			display: grid;
+			gap: 6px;
+		}
+
+		label {
+			font-size: 0.88rem;
+			color: var(--muted);
+		}
+
+		input,
+		select,
+		button {
+			font: inherit;
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 10px;
+			background: #fffdf9;
+		}
+
+		button {
+			background: var(--accent);
+			border-color: #0f6467;
+			color: #fff;
+			cursor: pointer;
+			transition: transform 120ms ease, box-shadow 120ms ease;
+		}
+
+		button:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 8px 16px rgba(22, 124, 128, 0.25);
+		}
+
+		.status {
+			margin: 0;
+			min-height: 1.1rem;
+			font-size: 0.9rem;
+			color: var(--muted);
+		}
+
+		.status.error {
+			color: var(--expense);
+		}
+
+		.list {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			gap: 8px;
+			max-height: 360px;
+			overflow-y: auto;
+		}
+
+		.item {
+			border: 1px solid var(--border);
+			border-left-width: 4px;
+			border-radius: 10px;
+			padding: 10px;
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 6px;
+			background: #fffefc;
+		}
+
+		.item.income {
+			border-left-color: var(--income);
+		}
+
+		.item.expense {
+			border-left-color: var(--expense);
+		}
+
+		.item-title {
+			margin: 0;
+			font-size: 0.95rem;
+		}
+
+		.item-meta {
+			margin: 0;
+			font-size: 0.8rem;
+			color: var(--muted);
+		}
+
+		.empty {
+			margin: 0;
+			color: var(--muted);
+			font-size: 0.9rem;
+		}
+
+		@media (max-width: 780px) {
+			.cards {
+				grid-template-columns: 1fr;
+			}
+
+			.grid {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class='app'>
+		<header class='header'>
+			<div class='header-top'>
+				<h1>Budget Dashboard</h1>
+				<button id='switchAccountBtn' class='ghost' type='button'>Switch Account</button>
+			</div>
+			<p class='meta'>Track income and expenses for the selected account.</p>
+			<span id='accountChip' class='account-chip'></span>
+		</header>
+
+		<section class='content'>
+			<div class='cards'>
+				<article class='card'>
+					<small>Total Income</small>
+					<h2 id='incomeTotal' class='positive'>$0.00</h2>
+				</article>
+				<article class='card'>
+					<small>Total Expenses</small>
+					<h2 id='expenseTotal' class='negative'>$0.00</h2>
+				</article>
+				<article class='card'>
+					<small>Remaining Balance</small>
+					<h2 id='balanceTotal'>$0.00</h2>
+				</article>
+			</div>
+
+			<div class='grid'>
+				<section class='panel'>
+					<h3>Add Transaction</h3>
+					<form id='budgetForm'>
+						<div class='field'>
+							<label for='description'>Description</label>
+							<input id='description' name='description' type='text' maxlength='120' required placeholder='e.g. Salary, Groceries'>
+						</div>
+
+						<div class='field'>
+							<label for='amount'>Amount</label>
+							<input id='amount' name='amount' type='number' min='0.01' step='0.01' required placeholder='0.00'>
+						</div>
+
+						<div class='field'>
+							<label for='entryType'>Type</label>
+							<select id='entryType' name='entryType'>
+								<option value='income'>Income</option>
+								<option value='expense'>Expense</option>
+							</select>
+						</div>
+
+						<button type='submit'>Add Entry</button>
+						<p id='formStatus' class='status' aria-live='polite'></p>
+					</form>
+				</section>
+
+				<section class='panel'>
+					<h3>Transactions</h3>
+					<p id='emptyState' class='empty'>No transactions added yet.</p>
+					<ul id='transactionList' class='list' aria-live='polite'></ul>
+				</section>
+			</div>
+		</section>
+	</main>
+
+	<script>
+		const API_BASE = 'http://localhost:5000';
+		const accountId = localStorage.getItem('activeAccountId');
+		const accountEmail = localStorage.getItem('activeAccountEmail');
+
+		if (!accountId || !accountEmail) {
+			window.location.href = '/';
+		}
+
+		const accountChip = document.getElementById('accountChip');
+		const switchAccountBtn = document.getElementById('switchAccountBtn');
+		const form = document.getElementById('budgetForm');
+		const list = document.getElementById('transactionList');
+		const emptyState = document.getElementById('emptyState');
+		const incomeTotalEl = document.getElementById('incomeTotal');
+		const expenseTotalEl = document.getElementById('expenseTotal');
+		const balanceTotalEl = document.getElementById('balanceTotal');
+		const formStatus = document.getElementById('formStatus');
+
+		let transactions = [];
+
+		function formatCurrency(value) {
+			return Number(value).toLocaleString('en-US', {
+				style: 'currency',
+				currency: 'USD'
+			});
+		}
+
+		function formatDate(value) {
+			const date = new Date(value);
+			if (Number.isNaN(date.getTime())) {
+				return 'Unknown date';
+			}
+
+			return date.toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric'
+			});
+		}
+
+		function setFormStatus(message, isError = false) {
+			formStatus.textContent = message;
+			formStatus.className = isError ? 'status error' : 'status';
+		}
+
+		function renderTotals() {
+			const income = transactions
+				.filter((entry) => entry.entry_type === 'income')
+				.reduce((sum, entry) => sum + Number(entry.amount), 0);
+
+			const expenses = transactions
+				.filter((entry) => entry.entry_type === 'expense')
+				.reduce((sum, entry) => sum + Number(entry.amount), 0);
+
+			const balance = income - expenses;
+
+			incomeTotalEl.textContent = formatCurrency(income);
+			expenseTotalEl.textContent = formatCurrency(expenses);
+			balanceTotalEl.textContent = formatCurrency(balance);
+			balanceTotalEl.className = balance >= 0 ? 'positive' : 'negative';
+		}
+
+		function renderTransactions() {
+			list.innerHTML = '';
+
+			if (transactions.length === 0) {
+				emptyState.style.display = 'block';
+				return;
+			}
+
+			emptyState.style.display = 'none';
+
+			transactions.forEach((entry) => {
+				const item = document.createElement('li');
+				item.className = `item ${entry.entry_type}`;
+
+				const title = document.createElement('p');
+				title.className = 'item-title';
+				title.textContent = entry.description;
+
+				const meta = document.createElement('p');
+				meta.className = 'item-meta';
+				meta.textContent = `${entry.entry_type.toUpperCase()} · ${formatDate(entry.created_at)}`;
+
+				const value = document.createElement('strong');
+				value.className = entry.entry_type === 'income' ? 'positive' : 'negative';
+				value.textContent = `${entry.entry_type === 'income' ? '+' : '-'}${formatCurrency(entry.amount)}`;
+
+				item.appendChild(title);
+				item.appendChild(value);
+				item.appendChild(meta);
+				list.appendChild(item);
+			});
+		}
+
+		async function loadTransactions() {
+			try {
+				const response = await fetch(`${API_BASE}/api/accounts/${accountId}/transactions`);
+				if (!response.ok) {
+					const data = await response.json().catch(() => ({}));
+					throw new Error(data.error || 'Failed to load transactions.');
+				}
+
+				const data = await response.json();
+				transactions = Array.isArray(data.transactions) ? data.transactions : [];
+				renderTransactions();
+				renderTotals();
+			} catch (error) {
+				setFormStatus(error.message || 'Could not load transactions.', true);
+			}
+		}
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			setFormStatus('Saving entry...');
+
+			const formData = new FormData(form);
+			const description = String(formData.get('description') || '').trim();
+			const amount = Number(formData.get('amount'));
+			const entryType = String(formData.get('entryType') || '');
+
+			if (!description || Number.isNaN(amount) || amount <= 0) {
+				setFormStatus('Enter a valid description and amount.', true);
+				return;
+			}
+
+			if (entryType !== 'income' && entryType !== 'expense') {
+				setFormStatus('Type must be income or expense.', true);
+				return;
+			}
+
+			try {
+				const response = await fetch(`${API_BASE}/api/accounts/${accountId}/transactions`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						description,
+						amount,
+						entry_type: entryType
+					})
+				});
+
+				if (!response.ok) {
+					const data = await response.json().catch(() => ({}));
+					throw new Error(data.error || 'Failed to save transaction.');
+				}
+
+				const data = await response.json();
+				if (data.transaction) {
+					transactions.unshift(data.transaction);
+					renderTransactions();
+					renderTotals();
+				}
+
+				form.reset();
+				document.getElementById('entryType').value = 'income';
+				setFormStatus('Entry saved.');
+			} catch (error) {
+				setFormStatus(error.message || 'Could not save transaction.', true);
+			}
+		});
+
+		switchAccountBtn.addEventListener('click', () => {
+			localStorage.removeItem('activeAccountId');
+			localStorage.removeItem('activeAccountEmail');
+			window.location.href = '/';
+		});
+
+		accountChip.textContent = `${accountEmail} (ID ${accountId})`;
+		loadTransactions();
+	</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+services:
+  web:
+    build: ./budget_tracker
+    ports:
+      - "8081:80"
+    volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - NGINX_ENV=production
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=budget_user
+      - DB_PASSWORD=budget_pass
+      - DB_NAME=budget_db
+    depends_on:
+      - api
+    networks:
+      - budget_network
+    
+  api:
+    build: ./python-docker
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://budget_user:budget_pass@db:5432/budget_db
+      - FLASK_DEBUG=1
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - budget_network 
+    
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=budget_user
+      - POSTGRES_PASSWORD=budget_pass
+      - POSTGRES_DB=budget_db
+    volumes:
+      - pg_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:  
+      test: ["CMD-SHELL", "pg_isready -U budget_user -d budget_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - budget_network
+  
+networks:
+  budget_network:
+    driver: bridge
+
+volumes:
+  pg_data:
